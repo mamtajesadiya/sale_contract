@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="setu_sale_contract_action" model="ir.actions.act_window">
+        <field name="name">SetuSaleContract</field>
+        <field name="res_model">setu.sale.contract</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="setu_sale_contract_tree" model="ir.ui.view">
+        <field name="name">SetuSaleContractTree</field>
+        <field name="model">setu.sale.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Sale">
+                <field name="number"/>
+                <field name="product_package"/>
+                <field name="shipment"/>
+                <field name="base_price"/>
+                <field name="quantity"/>
+                <field name="ordered_quantity"/>
+                <field name="company"/>
+                <field name="customer"/>
+                <field name="commodity"/>
+                <field name="payment_term"/>
+                <field name="delivery_date"/>
+                <field name="ordering_date"/>
+                <field name="agreement_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="setu_sale_contract_form" model="ir.ui.view">
+        <field name="name">SetuSaleContractForm</field>
+        <field name="model">setu.sale.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="%(setu_sales_export_process.setu_new_quotation_creation_action)d" type="action"
+                            string="New Quotation" attrs="{'invisible': [('state','in',['draft','close','cancel'])]}"/>
+                    <button string="Confirm" type="object" name="confirm"
+                            attrs="{'invisible': [('state','in',['ongoing','cancel','close'])]}"/>
+                    <button string="Close" type="object" name="close" attrs="{'invisible': [('state','in',['draft','cancel','close'])]}"/>
+                    <button string="Cancel" type="object" name="cancel" attrs="{'invisible': [('state','in',['ongoing','close'])]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visiable="draft,ongoing,close,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="check_sale_order" string="Sale Order"
+                                class="oe_stat_button" icon="fa-pencil-square-o" position="inside">
+                            <field name="sale_order_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <h1>
+                        <field name="number"/>
+                    </h1>
+                    <group>
+                        <group string="CUSTOMER INFORMATION">
+                            <field name="customer" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            <field name="is_local_contact" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                        <group string="OTHER INFORMATION">
+                            <field name="company" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="PRODUCT INFORMATION">
+                            <field name="commodity" domain="[('detailed_type', '=', 'product')]" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            <div class="o_td_label">
+                                <label for="quantity" string="Quantity" required="1" />
+                            </div>
+                            <div class="d-flex">
+                                <field name="quantity" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                <span class="o_form_label mx-0 oe_edit_only"/>
+                                <field name="product_uom_category_id" invisible="1" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                <field name="uom_id" readonly="0" placeholder="UOM" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            </div>
+                            <field name="ordered_quantity"/>
+                            <field name="base_price" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                        <group string="PRODUCT OTHER INFORMATION">
+                            <field name="product_package" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            <!--                            <field name="sale_order_count"/>-->
+                            <field name="shipment" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                    </group>
+                    <group string="ADDITIONAL INFORMATION">
+                        <group>
+                            <field name="payment_term" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            <field name="currency" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            <field name="agreement_date" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                        <group>
+                            <field name="ordering_date" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                            <field name="delivery_date" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                    </group>
+                    <group string="TERMS AND CONDITIONS &amp; DOCUMENTS:">
+                        <group>
+                            <field name="document" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                        <group>
+                            <field name="terms_and_conditions" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <menuitem id="setu_sale_contract_root_menu" name="Setu Sale Contract" action="setu_sale_contract_action"/>
+</odoo>
